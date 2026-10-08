@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SGPA & CGPA ক্যালকুলেটর - গণপ্রজাতন্ত্রী বাংলাদেশ সরকার থিম</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            bdgreen: {
+              DEFAULT: '#006A4E',
+              dark: '#004d38',
+              light: '#008763',
+              soft: '#e6f2ee'
+            },
+            bdred: {
+              DEFAULT: '#F42A41',
+              dark: '#d01c31',
+              light: '#ff4d61',
+              soft: '#fde8ea'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap');
+    body {
+      font-family: 'Hind Siliguri', sans-serif;
+    }
+  </style>
+</head>
+<body class="bg-slate-100 text-slate-800 min-h-screen flex flex-col justify-between">
+
+  <!-- Govt Top Bar -->
+  <div class="bg-bdgreen-dark text-white text-xs sm:text-sm py-1.5 px-4 shadow-md">
+    <div class="max-w-5xl mx-auto flex justify-between items-center">
+      <div class="flex items-center gap-2">
+        <span class="inline-block w-2.5 h-2.5 rounded-full bg-bdred animate-pulse"></span>
+        <span class="font-medium">গণপ্রজাতন্ত্রী বাংলাদেশ সরকার | শিক্ষা পোর্টাল</span>
+      </div>
+      <div class="text-emerald-100 hidden sm:block">বাংলাদেশ বিশ্ববিদ্যালয় মঞ্জুরী কমিশন (UGC) মানদণ্ড</div>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header class="bg-bdgreen border-b-4 border-bdred text-white py-6 px-4 shadow-lg">
+    <div class="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-4 text-center sm:text-left">
+        <!-- National Emblem / Emblem representation -->
+        <div class="w-16 h-16 rounded-full bg-bdred flex items-center justify-center border-2 border-white shadow-md shrink-0">
+          <i class="fa-solid fa-star text-yellow-300 text-2xl"></i>
+        </div>
+        <div>
+          <h1 class="text-2xl sm:text-3xl font-bold tracking-wide">SGPA & CGPA ক্যালকুলেটর</h1>
+          <p class="text-emerald-100 text-xs sm:text-sm mt-0.5">বিশ্ববিদ্যালয়ের ফলাফল হিসাব ও ইম্প্রুভমেন্ট/রিটেক মূল্যায়ন ব্যবস্থা</p>
+        </div>
+      </div>
+      <div class="bg-white/10 backdrop-blur-md px-4 py-2 rounded-lg border border-white/20 text-center text-xs">
+        <i class="fa-solid fa-shield-halved text-yellow-300 mr-1"></i> অফিসিয়াল গ্রেডিং নীতিমালা
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="max-w-5xl mx-auto w-full px-4 py-6 flex-grow space-y-6">
+
+    <!-- Tab Navigation -->
+    <div class="flex justify-center bg-white p-1.5 rounded-xl border border-slate-200 shadow-sm max-w-md mx-auto">
+      <button id="tabSgpaBtn" onclick="switchTab('sgpa')" class="flex-1 py-2.5 px-4 rounded-lg font-bold text-sm transition-all duration-200 bg-bdgreen text-white shadow">
+        <i class="fa-solid fa-book-open mr-1.5"></i> SGPA ক্যালকুলেটর
+      </button>
+      <button id="tabCgpaBtn" onclick="switchTab('cgpa')" class="flex-1 py-2.5 px-4 rounded-lg font-bold text-sm transition-all duration-200 text-slate-600 hover:text-bdgreen">
+        <i class="fa-solid fa-chart-pie mr-1.5"></i> CGPA ক্যালকুলেটর
+      </button>
+    </div>
+
+    <!-- ================= SGPA SECTION ================= -->
+    <section id="sgpaSection" class="bg-white rounded-2xl p-4 sm:p-6 border border-slate-200 shadow-md space-y-5">
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 pb-3 border-b border-slate-200">
+        <div>
+          <h2 class="text-lg sm:text-xl font-bold text-bdgreen-dark flex items-center gap-2">
+            <i class="fa-solid fa-list-check text-bdred"></i> বিষয়ের নাম, ক্রেডিট ও গ্রেড তালিকা
+          </h2>
+          <p class="text-xs text-slate-500">বিষয় যুক্ত করুন এবং গ্রেড নির্বাচন করে ফলাফল হিসাব করুন</p>
+        </div>
+        <button onclick="addSubjectRow()" class="w-full sm:w-auto bg-bdgreen hover:bg-bdgreen-dark text-white px-4 py-2 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 transition shadow active:scale-95">
+          <i class="fa-solid fa-plus-circle"></i> বিষয় যোগ করুন
+        </button>
+      </div>
+
+      <!-- Subject Rows Container -->
+      <div id="subjectRows" class="space-y-3"></div>
+
+      <!-- Actions -->
+      <div class="flex flex-wrap gap-3 pt-2">
+        <button onclick="calculateSGPA()" class="flex-1 bg-bdgreen hover:bg-bdgreen-dark text-white font-bold py-3 px-6 rounded-xl shadow-md transition active:scale-95 text-center flex items-center justify-center gap-2">
+          <i class="fa-solid fa-calculator"></i> SGPA ও স্ট্যাটাস হিসাব করুন
+        </button>
+        <button onclick="resetSGPA()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold px-5 py-3 rounded-xl transition">
+          <i class="fa-solid fa-rotate-right mr-1"></i> রিসেট
+        </button>
+      </div>
+
+      <!-- SGPA Result Card -->
+      <div id="sgpaResultCard" class="hidden mt-6 bg-bdgreen-soft border-2 border-bdgreen rounded-2xl p-5 sm:p-6 text-slate-800 space-y-4">
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-4 border-b border-bdgreen/20 pb-4">
+          <div>
+            <span class="text-xs font-bold text-bdgreen uppercase tracking-wider">অর্জিত ফলাফল</span>
+            <div class="text-3xl sm:text-4xl font-extrabold text-bdgreen-dark mt-1">
+              SGPA: <span id="sgpaResultValue" class="text-bdred">0.00</span>
+            </div>
+            <p class="text-xs text-slate-600 mt-1">
+              মোট ক্রেডিট: <span id="totalSgpaCredit" class="font-bold">0</span> | মোট পয়েন্ট: <span id="totalSgpaPoints" class="font-bold">0</span>
+            </p>
+          </div>
+          <div id="academicStatusBadge" class="px-4 py-2 rounded-lg bg-white border border-bdgreen font-bold text-xs sm:text-sm text-bdgreen text-center shadow-sm">
+            স্ট্যাটাস: নিয়মিত
+          </div>
+        </div>
+
+        <!-- Improvement / Retake Summary -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs sm:text-sm">
+          <div class="bg-white p-3 rounded-lg border border-emerald-200 shadow-sm flex items-start gap-2">
+            <i class="fa-solid fa-circle-exclamation text-amber-500 text-base mt-0.5"></i>
+            <div>
+              <span class="font-bold text-slate-700">Improvement উপযোগী বিষয়:</span>
+              <p id="impSummary" class="text-slate-600 font-medium">কোনো বিষয় নেই</p>
+            </div>
+          </div>
+          <div class="bg-white p-3 rounded-lg border border-red-200 shadow-sm flex items-start gap-2">
+            <i class="fa-solid fa-triangle-exclamation text-bdred text-base mt-0.5"></i>
+            <div>
+              <span class="font-bold text-slate-700">Retake (পুনরায় পরীক্ষা) আবশ্যক:</span>
+              <p id="retakeSummary" class="text-slate-600 font-medium">কোনো বিষয় নেই</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= CGPA SECTION ================= -->
+    <section id="cgpaSection" class="hidden bg-white rounded-2xl p-4 sm:p-6 border border-slate-200 shadow-md space-y-5">
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 pb-3 border-b border-slate-200">
+        <div>
+          <h2 class="text-lg sm:text-xl font-bold text-bdgreen-dark flex items-center gap-2">
+            <i class="fa-solid fa-layer-group text-bdred"></i> সেমিস্টারভিত্তিক SGPA ও ক্রেডিট
+          </h2>
+          <p class="text-xs text-slate-500">আপনার সম্পন্নকৃত সেমিস্টারসমূহের তথ্য দিন</p>
+        </div>
+        <button onclick="addSemesterRow()" class="w-full sm:w-auto bg-bdgreen hover:bg-bdgreen-dark text-white px-4 py-2 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 transition shadow active:scale-95">
+          <i class="fa-solid fa-plus-circle"></i> সেমিস্টার যোগ করুন
+        </button>
+      </div>
+
+      <!-- Semester Rows Container -->
+      <div id="semesterRows" class="space-y-3"></div>
+
+      <!-- Actions -->
+      <div class="flex flex-wrap gap-3 pt-2">
+        <button onclick="calculateCGPA()" class="flex-1 bg-bdgreen hover:bg-bdgreen-dark text-white font-bold py-3 px-6 rounded-xl shadow-md transition active:scale-95 text-center flex items-center justify-center gap-2">
+          <i class="fa-solid fa-calculator"></i> CGPA হিসাব করুন
+        </button>
+        <button onclick="resetCGPA()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold px-5 py-3 rounded-xl transition">
+          <i class="fa-solid fa-rotate-right mr-1"></i> রিসেট
+        </button>
+      </div>
+
+      <!-- CGPA Result Card -->
+      <div id="cgpaResultCard" class="hidden mt-6 bg-bdgreen-soft border-2 border-bdgreen rounded-2xl p-5 sm:p-6 text-slate-800 space-y-2 text-center">
+        <span class="text-xs font-bold text-bdgreen uppercase tracking-wider">সর্বমোট অর্জিত CGPA</span>
+        <div id="cgpaResultValue" class="text-4xl sm:text-5xl font-extrabold text-bdred">
+          0.00
+        </div>
+        <div id="cgpaDetails" class="text-xs sm:text-sm text-slate-600 font-medium">
+          মোট সেমিস্টার: <span id="totalSemesters" class="font-bold">0</span> | মোট ক্রেডিট: <span id="totalCgpaCredit" class="font-bold">0</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Improvement & Grading Rules Guide -->
+    <section class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm text-xs sm:text-sm space-y-4">
+      <h3 class="font-bold text-bdgreen-dark flex items-center gap-2 text-sm sm:text-base">
+        <i class="fa-solid fa-circle-info text-bdred"></i> ইউজিসি গ্রেডিং স্কেল ও নীতিমালা নির্দেশিকা
+      </h3>
+
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-slate-700">
+        <div class="bg-slate-50 p-2.5 rounded-lg border border-slate-200">A+ (4.00) : 80%+</div>
+        <div class="bg-slate-50 p-2.5 rounded-lg border border-slate-200">A  (3.75) : 75%-79%</div>
+        <div class="bg-slate-50 p-2.5 rounded-lg border border-slate-200">A- (3.50) : 70%-74%</div>
+        <div class="bg-slate-50 p-2.5 rounded-lg border border-slate-200">B+ (3.25) : 65%-69%</div>
+        <div class="bg-slate-50 p-2.5 rounded-lg border border-slate-200">B  (3.00) : 60%-64%</div>
+        <div class="bg-slate-50 p-2.5 rounded-lg border border-slate-200">B- (2.75) : 55%-59%</div>
+        <div class="bg-amber-50 p-2.5 rounded-lg border border-amber-200 text-amber-800 font-medium">C+ (2.50) : 50%-54% [Imp.]</div>
+        <div class="bg-red-50 p-2.5 rounded-lg border border-red-200 text-red-800 font-medium">F  (0.00) : &lt;40% [Retake]</div>
+      </div>
+
+      <div class="bg-slate-50 p-3 rounded-lg border border-slate-200 text-slate-600 leading-relaxed text-xs space-y-1">
+        <p><strong class="text-amber-600">■ Improvement যোগ্য বিষয়:</strong> যেসব বিষয়ের পয়েন্ট <span class="font-bold">2.50 (C+) বা তার নিচে</span> (কিন্তু 0.00 নয়), বিশ্ববিদ্যালয়ে সেগুলোতে মানোন্নয়ন (Improvement) পরীক্ষা দেওয়া যায়।</p>
+        <p><strong class="text-bdred">■ Retake আবশ্যক বিষয়:</strong> যেসব বিষয়ে <span class="font-bold">F (0.00)</span> এসেছে, সেগুলোতে পুনরায় কোর্স রেজিস্ট্রেশন বা পরীক্ষা (Retake) দেওয়া বাধ্যতামূলক।</p>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-bdgreen-dark text-white text-xs py-4 px-4 text-center border-t-2 border-bdred">
+    <p>© শিক্ষা মন্ত্রনালয় ও বিশ্ববিদ্যালয় মঞ্জুরী কমিশন (UGC) ডিজিটাল রূপকল্প অনুসরণে প্রস্তুতকৃত</p>
+  </footer>
+
+  <!-- Script Logic -->
+  <script>
+    function switchTab(tab) {
+      const sgpaSec = document.getElementById('sgpaSection');
+      const cgpaSec = document.getElementById('cgpaSection');
+      const tabSgpaBtn = document.getElementById('tabSgpaBtn');
+      const tabCgpaBtn = document.getElementById('tabCgpaBtn');
+
+      if (tab === 'sgpa') {
+        sgpaSec.classList.remove('hidden');
+        cgpaSec.classList.add('hidden');
+        tabSgpaBtn.className = "flex-1 py-2.5 px-4 rounded-lg font-bold text-sm transition-all duration-200 bg-bdgreen text-white shadow";
+        tabCgpaBtn.className = "flex-1 py-2.5 px-4 rounded-lg font-bold text-sm transition-all duration-200 text-slate-600 hover:text-bdgreen";
+      } else {
+        sgpaSec.classList.add('hidden');
+        cgpaSec.classList.remove('hidden');
+        tabCgpaBtn.className = "flex-1 py-2.5 px-4 rounded-lg font-bold text-sm transition-all duration-200 bg-bdgreen text-white shadow";
+        tabSgpaBtn.className = "flex-1 py-2.5 px-4 rounded-lg font-bold text-sm transition-all duration-200 text-slate-600 hover:text-bdgreen";
+      }
+    }
+
+    function addSubjectRow(name = '', credit = '3', gpa = '4.00') {
+      const container = document.getElementById('subjectRows');
+      const rowId = 'subj-' + Date.now() + '-' + Math.random().toString(36).substring(2, 5);
+      
+      const rowHTML = `
+        <div id="${rowId}" class="grid grid-cols-12 gap-2 sm:gap-3 items-center bg-slate-50 p-3 rounded-xl border border-slate-200 hover:border-bdgreen/50 transition">
+          <div class="col-span-12 sm:col-span-4">
+            <input type="text" placeholder="বিষয়ের নাম (যেমন: CSE 101)" value="${name}"
+              class="subj-name w-full bg-white border border-slate-300 focus:border-bdgreen text-slate-800 text-xs sm:text-sm rounded-lg p-2.5 outline-none font-medium">
+          </div>
+          <div class="col-span-4 sm:col-span-2">
+            <input type="number" step="0.5" min="0.5" max="10" placeholder="ক্রেডিট" value="${credit}"
+              class="subj-credit w-full bg-white border border-slate-300 focus:border-bdgreen text-slate-800 text-xs sm:text-sm rounded-lg p-2.5 outline-none font-medium">
+          </div>
+          <div class="col-span-5 sm:col-span-3">
+            <select onchange="updateRowBadge('${rowId}')" class="subj-gpa w-full bg-white border border-slate-300 focus:border-bdgreen text-slate-800 text-xs sm:text-sm rounded-lg p-2.5 outline-none font-medium cursor-pointer">
+              <option value="4.00" ${gpa === '4.00' ? 'selected' : ''}>A+ (4.00)</option>
+              <option value="3.75" ${gpa === '3.75' ? 'selected' : ''}>A (3.75)</option>
+              <option value="3.50" ${gpa === '3.50' ? 'selected' : ''}>A- (3.50)</option>
+              <option value="3.25" ${gpa === '3.25' ? 'selected' : ''}>B+ (3.25)</option>
+              <option value="3.00" ${gpa === '3.00' ? 'selected' : ''}>B (3.00)</option>
+              <option value="2.75" ${gpa === '2.75' ? 'selected' : ''}>B- (2.75)</option>
+              <option value="2.50" ${gpa === '2.50' ? 'selected' : ''}>C+ (2.50)</option>
+              <option value="2.25" ${gpa === '2.25' ? 'selected' : ''}>C (2.25)</option>
+              <option value="2.00" ${gpa === '2.00' ? 'selected' : ''}>D (2.00)</option>
+              <option value="0.00" ${gpa === '0.00' ? 'selected' : ''}>F (0.00)</option>
+            </select>
+          </div>
+          <div class="col-span-2 sm:col-span-2 text-center">
+            <span id="${rowId}-status" class="status-tag inline-block text-[11px] font-bold px-2 py-1 rounded bg-emerald-100 text-emerald-800 border border-emerald-300">
+              Pass
+            </span>
+          </div>
+          <div class="col-span-1 text-right">
+            <button onclick="removeRow('${rowId}')" title="মুছে ফেলুন" class="text-slate-400 hover:text-bdred p-1 transition">
+              <i class="fa-solid fa-trash-can"></i>
+            </button>
+          </div>
+        </div>
+      `;
+      container.insertAdjacentHTML('beforeend', rowHTML);
+      updateRowBadge(rowId);
+    }
+
+    function updateRowBadge(rowId) {
+      const row = document.getElementById(rowId);
+      if (!row) return;
+
+      const gpaVal = parseFloat(row.querySelector('.subj-gpa').value);
+      const statusBadge = document.getElementById(rowId + '-status');
+
+      if (gpaVal === 0.00) {
+        statusBadge.className = "status-tag inline-block text-[11px] font-bold px-2 py-1 rounded bg-red-100 text-red-700 border border-red-300";
+        statusBadge.innerText = "Retake";
+      } else if (gpaVal <= 2.50) {
+        statusBadge.className = "status-tag inline-block text-[11px] font-bold px-2 py-1 rounded bg-amber-100 text-amber-800 border border-amber-300";
+        statusBadge.innerText = "Improvement";
+      } else {
+        statusBadge.className = "status-tag inline-block text-[11px] font-bold px-2 py-1 rounded bg-emerald-100 text-emerald-800 border border-emerald-300";
+        statusBadge.innerText = "Pass";
+      }
+    }
+
+    function addSemesterRow(name = '', sgpa = '', credit = '15') {
+      const container = document.getElementById('semesterRows');
+      const rowId = 'sem-' + Date.now() + '-' + Math.random().toString(36).substring(2, 5);
+      
+      const rowHTML = `
+        <div id="${rowId}" class="grid grid-cols-12 gap-2 sm:gap-3 items-center bg-slate-50 p-3 rounded-xl border border-slate-200 hover:border-bdgreen/50 transition">
+          <div class="col-span-4">
+            <input type="text" placeholder="সেমিস্টার (যেমন: 1st)" value="${name}"
+              class="w-full bg-white border border-slate-300 focus:border-bdgreen text-slate-800 text-xs sm:text-sm rounded-lg p-2.5 outline-none font-medium">
+          </div>
+          <div class="col-span-4">
+            <input type="number" step="0.01" min="0" max="4" placeholder="SGPA (যেমন: 3.75)" value="${sgpa}"
+              class="sem-sgpa w-full bg-white border border-slate-300 focus:border-bdgreen text-slate-800 text-xs sm:text-sm rounded-lg p-2.5 outline-none font-medium">
+          </div>
+          <div class="col-span-3">
+            <input type="number" step="0.5" min="1" max="30" placeholder="ক্রেডিট" value="${credit}"
+              class="sem-credit w-full bg-white border border-slate-300 focus:border-bdgreen text-slate-800 text-xs sm:text-sm rounded-lg p-2.5 outline-none font-medium">
+          </div>
+          <div class="col-span-1 text-right">
+            <button onclick="removeRow('${rowId}')" title="মুছে ফেলুন" class="text-slate-400 hover:text-bdred p-1 transition">
+              <i class="fa-solid fa-trash-can"></i>
+            </button>
+          </div>
+        </div>
+      `;
+      container.insertAdjacentHTML('beforeend', rowHTML);
+    }
+
+    function removeRow(id) {
+      const el = document.getElementById(id);
+      if (el) el.remove();
+    }
+
+    function calculateSGPA() {
+      const names = document.querySelectorAll('.subj-name');
+      const credits = document.querySelectorAll('.subj-credit');
+      const gpas = document.querySelectorAll('.subj-gpa');
+
+      let totalCredit = 0;
+      let totalQualityPoints = 0;
+
+      let impList = [];
+      let retakeList = [];
+
+      credits.forEach((creditInput, index) => {
+        const credit = parseFloat(creditInput.value) || 0;
+        const gpa = parseFloat(gpas[index].value) || 0;
+        const subjName = names[index].value.trim() || `বিষয় #${index + 1}`;
+
+        if (credit > 0) {
+          totalCredit += credit;
+          totalQualityPoints += (credit * gpa);
+
+          if (gpa === 0.00) {
+            retakeList.push(subjName);
+          } else if (gpa <= 2.50) {
+            impList.push(subjName);
+          }
+        }
+      });
+
+      const resultCard = document.getElementById('sgpaResultCard');
+      const resultValue = document.getElementById('sgpaResultValue');
+      const totalCreditSpan = document.getElementById('totalSgpaCredit');
+      const totalPointsSpan = document.getElementById('totalSgpaPoints');
+      const impSummary = document.getElementById('impSummary');
+      const retakeSummary = document.getElementById('retakeSummary');
+      const statusBadge = document.getElementById('academicStatusBadge');
+
+      if (totalCredit > 0) {
+        const sgpa = (totalQualityPoints / totalCredit).toFixed(2);
+        resultValue.innerText = sgpa;
+        totalCreditSpan.innerText = totalCredit;
+        totalPointsSpan.innerText = totalQualityPoints.toFixed(2);
+
+        // Update Improvement & Retake Summary
+        impSummary.innerText = impList.length > 0 ? impList.join(', ') : 'কোনো বিষয় নেই';
+        retakeSummary.innerText = retakeList.length > 0 ? retakeList.join(', ') : 'কোনো বিষয় নেই';
+
+        if (retakeList.length > 0) {
+          statusBadge.className = "px-4 py-2 rounded-lg bg-red-100 border border-red-300 font-bold text-xs sm:text-sm text-red-700 text-center shadow-sm";
+          statusBadge.innerText = "স্ট্যাটাস: Retake প্রযোজ্য";
+        } else if (impList.length > 0) {
+          statusBadge.className = "px-4 py-2 rounded-lg bg-amber-100 border border-amber-300 font-bold text-xs sm:text-sm text-amber-800 text-center shadow-sm";
+          statusBadge.innerText = "স্ট্যাটাস: Improvement সম্ভব";
+        } else {
+          statusBadge.className = "px-4 py-2 rounded-lg bg-emerald-100 border border-emerald-300 font-bold text-xs sm:text-sm text-emerald-800 text-center shadow-sm";
+          statusBadge.innerText = "স্ট্যাটাস: চমৎকার ফলাফল";
+        }
+
+        resultCard.classList.remove('hidden');
+      } else {
+        alert('অনুগ্রহ করে অন্তত একটি বিষয়ের সঠিক ক্রেডিট প্রদান করুন!');
+      }
+    }
+
+    function calculateCGPA() {
+      const sgpas = document.querySelectorAll('.sem-sgpa');
+      const credits = document.querySelectorAll('.sem-credit');
+
+      let totalCredit = 0;
+      let totalQualityPoints = 0;
+      let validSemesters = 0;
+
+      sgpas.forEach((sgpaInput, index) => {
+        const sgpa = parseFloat(sgpaInput.value);
+        const credit = parseFloat(credits[index].value) || 0;
+
+        if (!isNaN(sgpa) && credit > 0) {
+          totalCredit += credit;
+          totalQualityPoints += (sgpa * credit);
+          validSemesters++;
+        }
+      });
+
+      const resultCard = document.getElementById('cgpaResultCard');
+      const resultValue = document.getElementById('cgpaResultValue');
+      const totalSemSpan = document.getElementById('totalSemesters');
+      const totalCreditSpan = document.getElementById('totalCgpaCredit');
+
+      if (totalCredit > 0) {
+        const cgpa = (totalQualityPoints / totalCredit).toFixed(2);
+        resultValue.innerText = cgpa;
+        totalSemSpan.innerText = validSemesters;
+        totalCreditSpan.innerText = totalCredit;
+        resultCard.classList.remove('hidden');
+      } else {
+        alert('অনুগ্রহ করে সেমিস্টারের সঠিক SGPA এবং ক্রেডিট প্রদান করুন!');
+      }
+    }
+
+    function resetSGPA() {
+      document.getElementById('subjectRows').innerHTML = '';
+      document.getElementById('sgpaResultCard').classList.add('hidden');
+      addSubjectRow('Structured Programming', '3', '4.00');
+      addSubjectRow('Calculus & Geometry', '3', '2.50');
+      addSubjectRow('Physics Lab', '1.5', '0.00');
+      addSubjectRow('English Communication', '2', '3.50');
+    }
+
+    function resetCGPA() {
+      document.getElementById('semesterRows').innerHTML = '';
+      document.getElementById('cgpaResultCard').classList.add('hidden');
+      addSemesterRow('1st Semester', '3.75', '18');
+      addSemesterRow('2nd Semester', '3.80', '19.5');
+    }
+
+    window.onload = () => {
+      resetSGPA();
+      resetCGPA();
+    };
+  </script>
+</body>
+</html>
